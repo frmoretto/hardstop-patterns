@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "scope": "read",
+  "type": "sensitive",
+  "match_mode": "search",
+  "patterns": [
+    {"id": "SENS-CFG-001", "pattern": "[/\\\\]config\\.json$", "message": "Config file (may contain secrets)", "category": "config_files", "severity": "medium", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "SENS-CFG-002", "pattern": "[/\\\\]config\\.yaml$", "message": "Config file (may contain secrets)", "category": "config_files", "severity": "medium", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "SENS-CFG-003", "pattern": "[/\\\\]config\\.yml$", "message": "Config file (may contain secrets)", "category": "config_files", "severity": "medium", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "SENS-CFG-004", "pattern": "(?<!\\.vscode)[/\\\\]settings\\.json$", "message": "Settings file (may contain secrets)", "category": "config_files", "severity": "medium", "platforms": ["linux", "macos", "windows"], "added": "1.0.0", "notes": "Excludes .vscode/settings.json which is IDE config, not secrets"},
+    {"id": "SENS-BAK-001", "pattern": "[/\\\\]\\.env\\.bak$", "message": "Environment file backup", "category": "backup_files", "severity": "medium", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "SENS-BAK-002", "pattern": "[/\\\\]\\.env\\.backup$", "message": "Environment file backup", "category": "backup_files", "severity": "medium", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "SENS-BAK-003", "pattern": "[/\\\\]credentials\\.bak$", "message": "Credentials backup", "category": "backup_files", "severity": "medium", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "SENS-NAME-001", "pattern": "[/\\\\][^/\\\\]*password[^/\\\\]*$", "message": "File with 'password' in name", "category": "suspicious_names", "severity": "medium", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "SENS-NAME-002", "pattern": "[/\\\\](?!client_secret)[^/\\\\]*secret[^/\\\\]*$", "message": "File with 'secret' in name", "category": "suspicious_names", "severity": "medium", "platforms": ["linux", "macos", "windows"], "added": "1.0.0", "notes": "Excludes client_secret*.json (caught by CRED-TOKEN-002). Uses lookahead instead of lookbehind for Python re compat."},
+    {"id": "SENS-NAME-003", "pattern": "[/\\\\][^/\\\\]*token[^/\\\\]*(?:(?<!\\.js)(?<!\\.ts)(?<!\\.py)(?<!\\.rs)(?<!\\.go)(?<!\\.jsx)(?<!\\.tsx)(?<!\\.mjs)(?<!\\.cjs))$", "message": "File with 'token' in name", "category": "suspicious_names", "severity": "medium", "platforms": ["linux", "macos", "windows"], "added": "1.0.0", "notes": "Excludes source code files like tokenizer.js, tokenizer.tsx, etc."},
+    {"id": "SENS-NAME-004", "pattern": "[/\\\\][^/\\\\]*api.?key[^/\\\\]*$", "message": "File with 'apikey' in name", "category": "suspicious_names", "severity": "medium", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"}
+  ]
+}

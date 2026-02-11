@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0.0",
+  "patterns_version": "1.0.0",
+  "stats": {
+    "bash_dangerous": 180,
+    "bash_safe": 74,
+    "read_dangerous": 71,
+    "read_sensitive": 11,
+    "read_safe": 92
+  },
+  "total": 428,
+  "regex_notes": {
+    "lookbehinds": "Some patterns use fixed-length lookbehinds. Supported in Python re, Node.js 16+.",
+    "fullmatch": "Safe bash patterns use fullmatch semantics (anchored ^...$). JS consumers should use the match_mode field.",
+    "flags": "All patterns use case-insensitive matching."
+  },
+  "compatibility": {
+    "python": ">=3.8",
+    "node": ">=16.0.0"
+  }
+}

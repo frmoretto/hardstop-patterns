@@ -1,0 +1,228 @@
+{
+  "version": "1.0.0",
+  "scope": "bash",
+  "type": "dangerous",
+  "match_mode": "search",
+  "patterns": [
+
+    {"id": "DEL-001", "pattern": "(?<!echo\\s)(?<!echo ')(?<!echo \\\")rm\\s+(-[^\\s]*\\s+)*(/home/|~/)", "message": "Deletes home directory", "category": "deletion", "severity": "critical", "platforms": ["linux", "macos"], "notes": "Excludes echo/printf which just output strings", "added": "1.0.0"},
+    {"id": "DEL-002", "pattern": "(?<!echo\\s)(?<!echo ')(?<!echo \\\")rm\\s+(-[^\\s]*\\s+)*~(/[^/\\s]+)?(\\s|$|>|;|&|\\|)", "message": "Deletes home directory or subdirectory", "category": "deletion", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "DEL-003", "pattern": "(?<!echo\\s)(?<!echo ')(?<!echo \\\")rm\\s+(-[^\\s]*\\s+)*/(\\s|$|>|;|&|\\|)", "message": "Deletes root filesystem", "category": "deletion", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "DEL-004", "pattern": "(?<!echo\\s)rm\\s+(-[^\\s]*\\s+)*\\$HOME", "message": "Deletes home directory via $HOME", "category": "deletion", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "DEL-005", "pattern": "(?<!echo\\s)rm\\s+(-[^\\s]*\\s+)*\\$\\{HOME\\}", "message": "Deletes home directory via ${HOME}", "category": "deletion", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "DEL-006", "pattern": "(?<!echo\\s)rm\\s+(-[^\\s]*\\s+)*/home/\\$USER", "message": "Deletes user home via $USER", "category": "deletion", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "DEL-007", "pattern": "(?<!echo\\s)rm\\s+(-[^\\s]*\\s+)*/home/\\$\\{USER\\}", "message": "Deletes user home via ${USER}", "category": "deletion", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+
+    {"id": "FORK-001", "pattern": ":\\(\\)\\s*\\{\\s*:\\|:&\\s*\\}\\s*;\\s*:", "message": "Fork bomb — will crash system", "category": "system_damage", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+
+    {"id": "RSHELL-001", "pattern": "bash\\s+-i\\s+>&\\s*/dev/tcp/", "message": "Reverse shell — remote access backdoor", "category": "reverse_shell", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "RSHELL-002", "pattern": "nc\\s+(-[^\\s]*\\s+)*-e\\s+/bin/(ba)?sh", "message": "Reverse shell via netcat", "category": "reverse_shell", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "RSHELL-003", "pattern": "/dev/tcp/[^\\s]+", "message": "Network connection via /dev/tcp", "category": "reverse_shell", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "RSHELL-004", "pattern": "mkfifo.*nc.*sh", "message": "Reverse shell via named pipe", "category": "reverse_shell", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "RSHELL-005", "pattern": "python.*socket.*connect.*exec", "message": "Python reverse shell", "category": "reverse_shell", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "RSHELL-006", "pattern": "perl.*socket.*exec", "message": "Perl reverse shell", "category": "reverse_shell", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+
+    {"id": "EXFIL-001", "pattern": "curl\\s+.*(-d|--data|-F|--form)\\s+.*(\\.ssh|\\.aws|\\.config|\\.gnupg)", "message": "Exfiltrates credentials", "category": "credential_exfil", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "EXFIL-002", "pattern": "wget\\s+.*--post-(data|file)\\s+.*(\\.ssh|\\.aws|\\.config)", "message": "Exfiltrates credentials", "category": "credential_exfil", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "EXFIL-003", "pattern": "cat\\s+.*(\\.ssh/id_|\\.aws/credentials|\\.env)\\s*\\|", "message": "Pipes credentials to another command", "category": "credential_exfil", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "EXFIL-004", "pattern": "tar\\s+.*\\s+(\\.ssh|\\.aws|\\.gnupg|\\.config).*\\|.*(nc|curl|wget)", "message": "Archives and exfiltrates credentials", "category": "credential_exfil", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "EXFIL-005", "pattern": "scp\\s+.*(\\.ssh|\\.aws|\\.config).*@", "message": "Copies credentials to remote host", "category": "credential_exfil", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "EXFIL-006", "pattern": "cat\\s+~/\\.(ssh|aws|gnupg)/.*\\|\\s*nc\\s+", "message": "Pipes credentials via netcat", "category": "credential_exfil", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+
+    {"id": "CREAD-001", "pattern": "cat\\s+.*\\.ssh/(id_rsa|id_ed25519|id_ecdsa|id_dsa)", "message": "Reads SSH private key", "category": "credential_read", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "CREAD-002", "pattern": "cat\\s+.*\\.aws/credentials", "message": "Reads AWS credentials", "category": "credential_read", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "CREAD-003", "pattern": "cat\\s+.*\\.kube/config", "message": "Reads Kubernetes credentials", "category": "credential_read", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "CREAD-004", "pattern": "cat\\s+.*\\.docker/config\\.json", "message": "Reads Docker registry auth", "category": "credential_read", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "CREAD-005", "pattern": "cat\\s+.*\\.npmrc", "message": "Reads npm credentials", "category": "credential_read", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "CREAD-006", "pattern": "cat\\s+.*/etc/shadow", "message": "Reads system password hashes", "category": "credential_read", "severity": "critical", "platforms": ["linux"], "added": "1.0.0"},
+    {"id": "CREAD-007", "pattern": "cat\\s+.*\\.netrc", "message": "Reads plaintext HTTP credentials", "category": "credential_read", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "CREAD-008", "pattern": "cat\\s+.*\\.gnupg/", "message": "Reads GPG private data", "category": "credential_read", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "CREAD-009", "pattern": "cat\\s+.*\\.git-credentials", "message": "Reads Git credentials", "category": "credential_read", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "CREAD-010", "pattern": "cat\\s+.*\\.env(\\s|$)", "message": "Reads environment secrets", "category": "credential_read", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+
+    {"id": "DISK-001", "pattern": "dd\\s+.*of=/dev/(sd[a-z]|nvme|xvd|vd[a-z])", "message": "Overwrites disk directly", "category": "disk_destruction", "severity": "critical", "platforms": ["linux"], "added": "1.0.0"},
+    {"id": "DISK-002", "pattern": "mkfs(\\.[a-z0-9]+)?\\s+.*/dev/(sd[a-z]|nvme|xvd|vd[a-z])", "message": "Formats drive", "category": "disk_destruction", "severity": "critical", "platforms": ["linux"], "added": "1.0.0"},
+    {"id": "DISK-003", "pattern": ">\\s*/dev/(sd[a-z]|nvme)", "message": "Redirects to raw disk", "category": "disk_destruction", "severity": "critical", "platforms": ["linux"], "added": "1.0.0"},
+    {"id": "DISK-004", "pattern": "shred\\s+.*(/dev/|/home/|~/)", "message": "Shreds disk or home directory", "category": "disk_destruction", "severity": "critical", "platforms": ["linux"], "added": "1.0.0"},
+
+    {"id": "ENC-001", "pattern": "base64\\s+-d.*\\|\\s*(ba)?sh", "message": "Executes base64-encoded payload", "category": "encoded_execution", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "ENC-002", "pattern": "echo\\s+[A-Za-z0-9+/=]+\\s*\\|\\s*base64\\s+-d\\s*\\|\\s*(ba)?sh", "message": "Executes encoded payload", "category": "encoded_execution", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "ENC-003", "pattern": "eval\\s+.*\\$\\(.*base64", "message": "Eval with base64 decode", "category": "encoded_execution", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "ENC-004", "pattern": "python.*-c.*exec.*decode", "message": "Python encoded execution", "category": "encoded_execution", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+
+    {"id": "RCE-001", "pattern": "curl\\s+[^|]*\\|\\s*(ba)?sh", "message": "Pipes URL content to shell", "category": "remote_code_execution", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "RCE-002", "pattern": "wget\\s+.*\\|\\s*(ba)?sh", "message": "Pipes download to shell", "category": "remote_code_execution", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "RCE-003", "pattern": "curl\\s+[^|]*\\|\\s*python", "message": "Pipes URL content to Python", "category": "remote_code_execution", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+
+    {"id": "SYSD-001", "pattern": "chmod\\s+(-[^\\s]*\\s+)*777\\s+/", "message": "Sets world-writable on system root", "category": "system_damage", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "SYSD-002", "pattern": "chmod\\s+(-[^\\s]*\\s+)*-R\\s+777", "message": "Recursively sets world-writable", "category": "system_damage", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "SYSD-003", "pattern": "chown\\s+(-[^\\s]*\\s+)*-R\\s+.*\\s+/(?!home)", "message": "Recursive chown on system directories", "category": "system_damage", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+
+    {"id": "HIST-001", "pattern": ">\\s*~/\\.bash_history", "message": "Clears bash history", "category": "history_manipulation", "severity": "high", "platforms": ["linux", "macos"], "added": "1.0.0"},
+
+    {"id": "CRON-001", "pattern": "crontab\\s+-r", "message": "Removes all cron jobs", "category": "scheduled_persistence", "severity": "high", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "CRON-002", "pattern": "echo.*\\|\\s*crontab", "message": "Pipes to crontab (potential persistence)", "category": "scheduled_persistence", "severity": "high", "platforms": ["linux", "macos"], "added": "1.0.0"},
+
+    {"id": "SUDO-001", "pattern": "sudo\\s+rm\\s+(-[^\\s]*\\s+)*(/|/home|/etc|/usr|/var)", "message": "Sudo delete on system paths", "category": "privileged_operations", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "SUDO-002", "pattern": "sudo\\s+chmod\\s+(-[^\\s]*\\s+)*777", "message": "Sudo world-writable permission", "category": "privileged_operations", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "SUDO-003", "pattern": "sudo\\s+dd\\s+", "message": "Sudo disk write", "category": "privileged_operations", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+
+    {"id": "WIN-DEL-001", "pattern": "rd\\s+(/s|/q|\\s)+\\s*(C:\\\\|C:/|%SystemRoot%|%USERPROFILE%|%APPDATA%)", "message": "Deletes Windows system/user directory", "category": "windows_deletion", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-DEL-002", "pattern": "rmdir\\s+(/s|/q|\\s)+\\s*(C:\\\\|C:/|%SystemRoot%|%USERPROFILE%)", "message": "Deletes Windows system/user directory", "category": "windows_deletion", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-DEL-003", "pattern": "del\\s+(/[fqsa]|\\s)+\\s*(C:\\\\Windows|C:\\\\Users|%SystemRoot%)", "message": "Deletes Windows system files", "category": "windows_deletion", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-DEL-004", "pattern": "Remove-Item\\s+.*-Recurse.*\\s+(C:\\\\|C:/|~\\\\|\\$env:)", "message": "PowerShell recursive delete on system paths", "category": "windows_deletion", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-DEL-005", "pattern": "rm\\s+-r.*\\s+(C:\\\\Windows|C:\\\\Users\\\\[^\\\\]+$|\\$HOME)", "message": "Deletes Windows system/user directory", "category": "windows_deletion", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+
+    {"id": "WIN-REG-001", "pattern": "reg\\s+delete\\s+.*HKLM", "message": "Deletes machine-wide registry keys", "category": "windows_registry", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-REG-002", "pattern": "reg\\s+delete\\s+.*HKCU\\\\Software\\\\Microsoft\\\\Windows", "message": "Deletes critical user registry keys", "category": "windows_registry", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-REG-003", "pattern": "reg\\s+add\\s+.*\\\\Run\\s+", "message": "Adds registry run key (persistence)", "category": "windows_registry", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-REG-004", "pattern": "Remove-ItemProperty.*Registry", "message": "PowerShell registry deletion", "category": "windows_registry", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+
+    {"id": "WIN-CRED-001", "pattern": "cmdkey\\s+/list", "message": "Lists stored Windows credentials", "category": "windows_credential", "severity": "high", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-CRED-002", "pattern": "vaultcmd\\s+/list", "message": "Lists Windows credential vault", "category": "windows_credential", "severity": "high", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-CRED-003", "pattern": "mimikatz", "message": "Credential dumping tool", "category": "windows_credential", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-CRED-004", "pattern": "sekurlsa", "message": "Credential dumping (mimikatz module)", "category": "windows_credential", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-CRED-005", "pattern": "Get-Credential.*Export", "message": "Exports Windows credentials", "category": "windows_credential", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-CRED-006", "pattern": "copy.*\\\\Windows\\\\System32\\\\config\\\\(SAM|SYSTEM)", "message": "Copies Windows password database", "category": "windows_credential", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+
+    {"id": "WIN-DISK-001", "pattern": "format\\s+[A-Za-z]:", "message": "Formats Windows drive", "category": "windows_disk", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-DISK-002", "pattern": "diskpart", "message": "Windows disk partition tool", "category": "windows_disk", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-DISK-003", "pattern": "bcdedit\\s+/delete", "message": "Deletes boot configuration", "category": "windows_disk", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-DISK-004", "pattern": "bootrec\\s+/fixmbr", "message": "Modifies master boot record", "category": "windows_disk", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+
+    {"id": "WIN-SEC-001", "pattern": "netsh\\s+advfirewall\\s+set\\s+.*state\\s+off", "message": "Disables Windows firewall", "category": "windows_security", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-SEC-002", "pattern": "netsh\\s+firewall\\s+set\\s+opmode\\s+disable", "message": "Disables Windows firewall (legacy)", "category": "windows_security", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-SEC-003", "pattern": "Set-MpPreference\\s+-DisableRealtimeMonitoring", "message": "Disables Windows Defender", "category": "windows_security", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-SEC-004", "pattern": "sc\\s+stop\\s+WinDefend", "message": "Stops Windows Defender service", "category": "windows_security", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+
+    {"id": "WIN-RSHELL-001", "pattern": "powershell.*-e\\s+[A-Za-z0-9+/=]{20,}", "message": "Encoded PowerShell payload", "category": "windows_reverse_shell", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-RSHELL-002", "pattern": "powershell.*IEX.*\\(New-Object.*Net\\.WebClient\\)", "message": "PowerShell download cradle", "category": "windows_reverse_shell", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-RSHELL-003", "pattern": "powershell.*Invoke-WebRequest.*\\|\\s*iex", "message": "PowerShell download and execute", "category": "windows_reverse_shell", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-RSHELL-004", "pattern": "certutil.*-urlcache.*-split.*-f", "message": "Certutil download (LOLBin)", "category": "windows_reverse_shell", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-RSHELL-005", "pattern": "bitsadmin.*\\/transfer", "message": "BITSAdmin download (LOLBin)", "category": "windows_reverse_shell", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-RSHELL-006", "pattern": "mshta\\s+http", "message": "MSHTA remote execution", "category": "windows_reverse_shell", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-RSHELL-007", "pattern": "regsvr32\\s+/s\\s+/n\\s+/u\\s+/i:http", "message": "Regsvr32 script execution (Squiblydoo)", "category": "windows_reverse_shell", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+
+    {"id": "WIN-ADMIN-001", "pattern": "net\\s+user\\s+.*\\s+/add", "message": "Creates Windows user account", "category": "windows_admin", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-ADMIN-002", "pattern": "net\\s+localgroup\\s+administrators\\s+.*\\s+/add", "message": "Adds user to administrators", "category": "windows_admin", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-ADMIN-003", "pattern": "net\\s+user\\s+administrator\\s+/active:yes", "message": "Enables built-in administrator", "category": "windows_admin", "severity": "critical", "platforms": ["windows"], "added": "1.0.0"},
+
+    {"id": "WIN-SCHED-001", "pattern": "schtasks\\s+/create", "message": "Creates scheduled task (persistence)", "category": "windows_persistence", "severity": "high", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-SCHED-002", "pattern": "at\\s+\\d+:\\d+", "message": "Creates AT job (legacy scheduler)", "category": "windows_persistence", "severity": "high", "platforms": ["windows"], "added": "1.0.0"},
+
+    {"id": "WIN-EXEC-001", "pattern": "Set-ExecutionPolicy\\s+Bypass", "message": "Bypasses PowerShell execution policy", "category": "windows_persistence", "severity": "high", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-EXEC-002", "pattern": "powershell.*-ExecutionPolicy\\s+Bypass", "message": "Bypasses PowerShell execution policy", "category": "windows_persistence", "severity": "high", "platforms": ["windows"], "added": "1.0.0"},
+    {"id": "WIN-EXEC-003", "pattern": "powershell.*-ep\\s+bypass", "message": "Bypasses PowerShell execution policy", "category": "windows_persistence", "severity": "high", "platforms": ["windows"], "added": "1.0.0"},
+
+    {"id": "CMDSUB-001", "pattern": "\\bcd\\s+[^;&|]*(\\$\\(|`)", "message": "cd with command substitution (potential code execution)", "category": "shell_wrapper", "severity": "high", "platforms": ["linux", "macos"], "added": "1.0.0"},
+
+    {"id": "WRAP-001", "pattern": "\\b(ba)?sh\\s+-c\\s+[\"'].*\\brm\\s+(-[^\\s]*\\s+)*-r", "message": "Shell wrapper hiding recursive delete", "category": "shell_wrapper", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "WRAP-002", "pattern": "\\b(ba)?sh\\s+-c\\s+[\"'].*\\bdd\\s+.*of=/dev/", "message": "Shell wrapper hiding disk write", "category": "shell_wrapper", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "WRAP-003", "pattern": "\\b(ba)?sh\\s+-c\\s+[\"'].*\\bmkfs", "message": "Shell wrapper hiding filesystem format", "category": "shell_wrapper", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "WRAP-004", "pattern": "\\b(ba)?sh\\s+-c\\s+[\"'].*\\bcurl.*\\|\\s*(ba)?sh", "message": "Shell wrapper hiding curl pipe to shell", "category": "shell_wrapper", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "WRAP-005", "pattern": "\\b(ba)?sh\\s+-c\\s+[\"'].*\\bwget.*\\|\\s*(ba)?sh", "message": "Shell wrapper hiding wget pipe to shell", "category": "shell_wrapper", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "WRAP-006", "pattern": "\\bsudo\\s+(ba)?sh\\s+-c\\s+[\"'].*\\brm\\s+(-[^\\s]*\\s+)*-r", "message": "Sudo shell wrapper hiding recursive delete", "category": "shell_wrapper", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "WRAP-007", "pattern": "\\bsudo\\s+(ba)?sh\\s+-c\\s+[\"'].*\\bchmod\\s+(-[^\\s]*\\s+)*777", "message": "Sudo shell wrapper hiding chmod 777", "category": "shell_wrapper", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "WRAP-008", "pattern": "\\benv\\s+.*\\brm\\s+(-[^\\s]*\\s+)*-r", "message": "Env wrapper with recursive delete", "category": "shell_wrapper", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "WRAP-009", "pattern": "\\bxargs\\s+.*\\brm\\s+(-[^\\s]*\\s+)*-r", "message": "xargs piping to recursive delete", "category": "shell_wrapper", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "WRAP-010", "pattern": "\\bfind\\s+.*-exec\\s+rm\\s+(-[^\\s]*\\s+)*-r", "message": "find -exec with recursive delete", "category": "shell_wrapper", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+    {"id": "WRAP-011", "pattern": "\\bfind\\s+(~|/home|/|/etc|/usr|/var)\\s+.*-delete", "message": "find -delete on system/home paths", "category": "shell_wrapper", "severity": "critical", "platforms": ["linux", "macos"], "added": "1.0.0"},
+
+    {"id": "CLOUD-AWS-001", "pattern": "\\baws\\s+s3\\s+rm\\s+.*--recursive", "message": "AWS S3 recursive delete", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-AWS-002", "pattern": "\\baws\\s+s3\\s+rb\\s+.*--force", "message": "AWS S3 force remove bucket", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-AWS-003", "pattern": "\\baws\\s+ec2\\s+terminate-instances\\b", "message": "AWS EC2 terminate instances", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-AWS-004", "pattern": "\\baws\\s+rds\\s+delete-db-instance\\b", "message": "AWS RDS delete database", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-AWS-005", "pattern": "\\baws\\s+cloudformation\\s+delete-stack\\b", "message": "AWS CloudFormation delete stack", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-AWS-006", "pattern": "\\baws\\s+dynamodb\\s+delete-table\\b", "message": "AWS DynamoDB delete table", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-AWS-007", "pattern": "\\baws\\s+eks\\s+delete-cluster\\b", "message": "AWS EKS delete cluster", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-AWS-008", "pattern": "\\baws\\s+lambda\\s+delete-function\\b", "message": "AWS Lambda delete function", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-AWS-009", "pattern": "\\baws\\s+iam\\s+delete-role\\b", "message": "AWS IAM delete role", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-AWS-010", "pattern": "\\baws\\s+iam\\s+delete-user\\b", "message": "AWS IAM delete user", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+
+    {"id": "CLOUD-GCP-001", "pattern": "\\bgcloud\\s+projects\\s+delete\\b", "message": "GCP delete entire project", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-GCP-002", "pattern": "\\bgcloud\\s+compute\\s+instances\\s+delete\\b", "message": "GCP delete compute instance", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-GCP-003", "pattern": "\\bgcloud\\s+sql\\s+instances\\s+delete\\b", "message": "GCP delete SQL instance", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-GCP-004", "pattern": "\\bgcloud\\s+container\\s+clusters\\s+delete\\b", "message": "GCP delete GKE cluster", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-GCP-005", "pattern": "\\bgcloud\\s+storage\\s+rm\\s+.*-r", "message": "GCP storage recursive delete", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-GCP-006", "pattern": "\\bgcloud\\s+functions\\s+delete\\b", "message": "GCP delete Cloud Function", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-GCP-007", "pattern": "\\bgcloud\\s+iam\\s+service-accounts\\s+delete\\b", "message": "GCP delete service account", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+
+    {"id": "CLOUD-FB-001", "pattern": "\\bfirebase\\s+projects:delete\\b", "message": "Firebase delete project", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-FB-002", "pattern": "\\bfirebase\\s+firestore:delete\\s+.*--all-collections", "message": "Firebase delete all Firestore data", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-FB-003", "pattern": "\\bfirebase\\s+database:remove\\b", "message": "Firebase delete Realtime DB", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-FB-004", "pattern": "\\bfirebase\\s+functions:delete\\b", "message": "Firebase delete functions", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+
+    {"id": "CLOUD-K8S-001", "pattern": "\\bkubectl\\s+delete\\s+namespace\\b", "message": "Kubernetes delete namespace", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-K8S-002", "pattern": "\\bkubectl\\s+delete\\s+all\\s+--all", "message": "Kubernetes delete all resources", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-K8S-003", "pattern": "\\bkubectl\\s+delete\\s+.*--all\\s+--all-namespaces", "message": "Kubernetes delete across all namespaces", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-K8S-004", "pattern": "\\bhelm\\s+uninstall\\b", "message": "Helm uninstall release", "category": "cloud_destructive", "severity": "high", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+
+    {"id": "CLOUD-DOCKER-001", "pattern": "\\bdocker\\s+system\\s+prune\\s+.*-a", "message": "Docker prune all unused data", "category": "cloud_destructive", "severity": "high", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-DOCKER-002", "pattern": "\\bdocker\\s+volume\\s+rm\\b", "message": "Docker remove volume (data loss)", "category": "cloud_destructive", "severity": "high", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-DOCKER-003", "pattern": "\\bdocker\\s+volume\\s+prune\\b", "message": "Docker prune volumes", "category": "cloud_destructive", "severity": "high", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+
+    {"id": "CLOUD-TF-001", "pattern": "\\bterraform\\s+destroy\\b", "message": "Terraform destroy infrastructure", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-TF-002", "pattern": "\\bpulumi\\s+destroy\\b", "message": "Pulumi destroy resources", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+
+    {"id": "DB-001", "pattern": "\\bredis-cli\\s+FLUSHALL", "message": "Redis flush all data", "category": "database_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "DB-002", "pattern": "\\bredis-cli\\s+FLUSHDB", "message": "Redis flush database", "category": "database_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "DB-003", "pattern": "\\bmongosh?.*dropDatabase", "message": "MongoDB drop database", "category": "database_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "DB-004", "pattern": "\\bdropdb\\b", "message": "PostgreSQL drop database", "category": "database_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "DB-005", "pattern": "\\bmysqladmin\\s+drop\\b", "message": "MySQL drop database", "category": "database_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+
+    {"id": "CLOUD-PLAT-001", "pattern": "\\bvercel\\s+remove\\s+.*--yes", "message": "Vercel remove deployment", "category": "cloud_destructive", "severity": "high", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-PLAT-002", "pattern": "\\bvercel\\s+projects\\s+rm\\b", "message": "Vercel delete project", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-PLAT-003", "pattern": "\\bnetlify\\s+sites:delete\\b", "message": "Netlify delete site", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-PLAT-004", "pattern": "\\bheroku\\s+apps:destroy\\b", "message": "Heroku destroy app", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-PLAT-005", "pattern": "\\bheroku\\s+pg:reset\\b", "message": "Heroku reset Postgres", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-PLAT-006", "pattern": "\\bfly\\s+(apps\\s+)?destroy\\b", "message": "Fly.io destroy app", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-PLAT-007", "pattern": "\\bgh\\s+repo\\s+delete\\b", "message": "GitHub delete repository", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "CLOUD-PLAT-008", "pattern": "\\bnpm\\s+unpublish\\b", "message": "npm unpublish package", "category": "cloud_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+
+    {"id": "SQL-001", "pattern": "\\bDELETE\\s+FROM\\s+[^\\s;]+\\s*;", "message": "SQL DELETE without WHERE clause", "category": "database_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "SQL-002", "pattern": "\\bDELETE\\s+FROM\\s+[^\\s;]+\\s*$", "message": "SQL DELETE without WHERE clause", "category": "database_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "SQL-003", "pattern": "\\bTRUNCATE\\s+TABLE\\b", "message": "SQL TRUNCATE TABLE", "category": "database_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "SQL-004", "pattern": "\\bDROP\\s+TABLE\\b", "message": "SQL DROP TABLE", "category": "database_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+    {"id": "SQL-005", "pattern": "\\bDROP\\s+DATABASE\\b", "message": "SQL DROP DATABASE", "category": "database_destructive", "severity": "critical", "platforms": ["linux", "macos", "windows"], "added": "1.0.0"},
+
+    {"id": "MAC-DISK-001", "pattern": "\\bdiskutil\\s+eraseDisk\\b", "message": "Erases entire macOS disk", "category": "macos_disk", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-DISK-002", "pattern": "\\bdiskutil\\s+eraseVolume\\b", "message": "Erases macOS volume", "category": "macos_disk", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-DISK-003", "pattern": "\\bdiskutil\\s+partitionDisk\\b", "message": "Repartitions macOS disk (data loss)", "category": "macos_disk", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-DISK-004", "pattern": "\\bdiskutil\\s+apfs\\s+deleteContainer\\b", "message": "Deletes APFS container", "category": "macos_disk", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-DISK-005", "pattern": "\\bdiskutil\\s+secureErase\\b", "message": "Secure erases macOS disk", "category": "macos_disk", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-DISK-006", "pattern": "\\bdiskutil\\s+zeroDisk\\b", "message": "Writes zeros to macOS disk", "category": "macos_disk", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+
+    {"id": "MAC-KEY-001", "pattern": "\\bsecurity\\s+delete-keychain\\b", "message": "Deletes macOS keychain", "category": "macos_keychain", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-KEY-002", "pattern": "\\bsecurity\\s+dump-keychain\\b", "message": "Dumps macOS keychain contents", "category": "macos_keychain", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-KEY-003", "pattern": "\\bsecurity\\s+find-generic-password\\s+.*-w\\b", "message": "Extracts password from macOS keychain", "category": "macos_keychain", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-KEY-004", "pattern": "\\bsecurity\\s+find-internet-password\\s+.*-w\\b", "message": "Extracts internet password from keychain", "category": "macos_keychain", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-KEY-005", "pattern": "\\bsecurity\\s+export\\s+.*-k\\b", "message": "Exports macOS keychain", "category": "macos_keychain", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+
+    {"id": "MAC-TM-001", "pattern": "\\btmutil\\s+delete\\b", "message": "Deletes Time Machine backup", "category": "macos_timemachine", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-TM-002", "pattern": "\\btmutil\\s+disable\\b", "message": "Disables Time Machine", "category": "macos_timemachine", "severity": "high", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-TM-003", "pattern": "\\btmutil\\s+deletelocalsnapshots\\b", "message": "Deletes local Time Machine snapshots", "category": "macos_timemachine", "severity": "high", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-TM-004", "pattern": "\\brm\\s+.*Backups\\.backupdb", "message": "Deletes Time Machine backup data", "category": "macos_timemachine", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+
+    {"id": "MAC-DS-001", "pattern": "\\bdscl\\s+\\.\\s+-delete\\s+/Users/", "message": "Deletes macOS user account", "category": "macos_directory_services", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-DS-002", "pattern": "\\bdscl\\s+\\.\\s+-delete\\s+/Groups/", "message": "Deletes macOS group", "category": "macos_directory_services", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-DS-003", "pattern": "\\bdscl\\s+\\.\\s+-append\\s+/Groups/admin\\s+", "message": "Adds user to admin group", "category": "macos_directory_services", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+
+    {"id": "MAC-SEC-001", "pattern": "\\bspctl\\s+--master-disable\\b", "message": "Disables macOS Gatekeeper", "category": "macos_system_security", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-SEC-002", "pattern": "\\bcsrutil\\s+disable\\b", "message": "Disables System Integrity Protection", "category": "macos_system_security", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-SEC-003", "pattern": "\\bsystemsetup\\s+-setremotelogin\\s+on\\b", "message": "Enables SSH/remote login", "category": "macos_system_security", "severity": "high", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-SEC-004", "pattern": "\\bnvram\\s+boot-args", "message": "Modifies macOS boot arguments", "category": "macos_system_security", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+
+    {"id": "MAC-PRIV-001", "pattern": "\\bsqlite3\\s+.*TCC\\.db", "message": "Direct access to macOS privacy database", "category": "macos_privacy", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-PRIV-002", "pattern": "\\btccutil\\s+reset\\b", "message": "Resets macOS privacy permissions", "category": "macos_privacy", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+
+    {"id": "MAC-PERSIST-001", "pattern": "\\blaunchctl\\s+load\\s+.*/Library/LaunchDaemons/", "message": "Loads system daemon (persistence mechanism)", "category": "macos_persistence", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-PERSIST-002", "pattern": "\\blaunchctl\\s+unload\\s+.*com\\.apple\\.", "message": "Unloads Apple system service", "category": "macos_persistence", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-PERSIST-003", "pattern": "\\bcp\\s+.*\\.plist\\s+.*/Library/LaunchDaemons/", "message": "Installs system daemon (persistence)", "category": "macos_persistence", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-PERSIST-004", "pattern": "\\bcp\\s+.*\\.plist\\s+.*/Library/LaunchAgents/", "message": "Installs launch agent (persistence)", "category": "macos_persistence", "severity": "high", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-PERSIST-005", "pattern": "\\bmv\\s+.*\\.plist\\s+.*/Library/Launch", "message": "Moves plist to launch directory (persistence)", "category": "macos_persistence", "severity": "critical", "platforms": ["macos"], "added": "1.0.0"},
+
+    {"id": "MAC-APP-001", "pattern": "\\brm\\s+.*~/Library/Application\\\\ Support/", "message": "Deletes macOS application data", "category": "macos_appdata", "severity": "high", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-APP-002", "pattern": "\\brm\\s+(-[^\\s]*\\s+)*-r.*~/Library/Preferences/", "message": "Recursively deletes macOS preferences", "category": "macos_appdata", "severity": "high", "platforms": ["macos"], "added": "1.0.0"},
+    {"id": "MAC-APP-003", "pattern": "\\bdefaults\\s+delete\\s+(com\\.apple\\.|NSGlobalDomain)", "message": "Deletes system preferences", "category": "macos_appdata", "severity": "high", "platforms": ["macos"], "added": "1.0.0"}
+  ]
+}

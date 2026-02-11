@@ -1,0 +1,44 @@
+{
+  "name": "hardstop-patterns",
+  "version": "1.0.0",
+  "description": "Security patterns for detecting dangerous commands and credential file access. Used by HardStop and compatible tools.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "patterns/*.json"
+  ],
+  "keywords": [
+    "security",
+    "patterns",
+    "hardstop",
+    "claude-code",
+    "safety",
+    "command-detection",
+    "credential-protection",
+    "devtools",
+    "hooks"
+  ],
+  "author": "ClarityDome <info@clarity-gate.org>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frmoretto/hardstop-patterns"
+  },
+  "homepage": "https://github.com/frmoretto/hardstop-patterns#readme",
+  "bugs": {
+    "url": "https://github.com/frmoretto/hardstop-patterns/issues"
+  },
+  "scripts": {
+    "test": "cross-env VITE_CJS_IGNORE_WARNING=true vitest run",
+    "test:watch": "cross-env VITE_CJS_IGNORE_WARNING=true vitest"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "vitest": "^4.0.18"
+  }
+}
