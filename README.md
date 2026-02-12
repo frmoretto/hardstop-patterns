@@ -1,5 +1,7 @@
 # hardstop-patterns
 
+428 regex patterns for detecting dangerous shell commands and credential file reads. Install: `npm install hardstop-patterns`.
+
 Security patterns for detecting dangerous commands and credential file access. Single source of truth for [HardStop](https://github.com/frmoretto/hardstop) and compatible tools.
 
 ## What This Is
