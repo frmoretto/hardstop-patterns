@@ -1,5 +1,11 @@
 # hardstop-patterns
 
+[![npm version](https://img.shields.io/npm/v/hardstop-patterns.svg)](https://www.npmjs.com/package/hardstop-patterns)
+[![npm downloads](https://img.shields.io/npm/dm/hardstop-patterns.svg)](https://www.npmjs.com/package/hardstop-patterns)
+[![license](https://img.shields.io/npm/l/hardstop-patterns.svg)](LICENSE)
+[![node](https://img.shields.io/node/v/hardstop-patterns.svg)](https://www.npmjs.com/package/hardstop-patterns)
+[![Platform](https://img.shields.io/badge/platform-macOS_%7C_Linux_%7C_Windows-lightgrey)](https://github.com/frmoretto/hardstop-patterns)
+
 428 regex patterns for detecting dangerous shell commands and credential file reads. Install: `npm install hardstop-patterns`.
 
 Security patterns for detecting dangerous commands and credential file access. Single source of truth for [HardStop](https://github.com/frmoretto/hardstop) and compatible tools.
