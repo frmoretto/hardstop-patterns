@@ -1,7 +1,7 @@
 {
   "name": "hardstop-patterns",
   "version": "1.0.1",
-  "description": "Security patterns for detecting dangerous commands and credential file access. Used by HardStop and compatible tools.",
+  "description": "Security patterns for detecting dangerous commands and credential file access. Used by HardStop and compatible tools. Part of the Hardstop ecosystem.",
   "main": "index.js",
   "types": "index.d.ts",
   "files": [

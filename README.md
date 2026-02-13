@@ -10,6 +10,8 @@
 
 Security patterns for detecting dangerous commands and credential file access. Single source of truth for [HardStop](https://github.com/frmoretto/hardstop) and compatible tools.
 
+**Ecosystem:** This is the pattern library for [hardstop](https://www.npmjs.com/package/hardstop) ([GitHub](https://github.com/frmoretto/hardstop)) — use standalone or as part of the HardStop plugin.
+
 ## What This Is
 
 A data library — 428 regex patterns across 5 categories:

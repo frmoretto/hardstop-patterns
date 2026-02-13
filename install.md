@@ -84,4 +84,4 @@ Consumers MUST check dangerous patterns before safe patterns:
 - Repository: https://github.com/frmoretto/hardstop-patterns
 - Full documentation: https://github.com/frmoretto/hardstop-patterns#readme
 - Schema specification: https://github.com/frmoretto/hardstop-patterns/blob/main/SCHEMA.md
-- Parent project: https://github.com/frmoretto/hardstop
+- Parent project: [hardstop](https://www.npmjs.com/package/hardstop) ([GitHub](https://github.com/frmoretto/hardstop))
